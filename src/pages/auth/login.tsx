@@ -18,16 +18,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-const loginSchema = z.object({
-  email: z.string().min(1, {
-    message: "Email is required.",
-  }),
-  password: z.string().min(1, {
-    message: "Password is required.",
-  }),
-});
+import { loginSchema, loginSchemaType } from "./schemas";
+import { login } from "./api";
+import { useSetRecoilState } from "recoil";
+import authState from "@/state/atom/auth";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   const form = useForm({
@@ -38,14 +33,25 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    console.log("🚀 ~ onSubmit ~ values:", values);
+  const setAuth = useSetRecoilState(authState);
+  const onSubmit = async (values: loginSchemaType) => {
+    await login(values)
+      .then((res) => {
+        console.log("🚀 ~ onSubmit ~ response:", res);
+        setAuth({
+          loggedIn: true,
+          token: res.token,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Login</CardTitle>
-        <CardDescription>Log in homestay Admin panel</CardDescription>
+        <CardDescription>Log in to homestay Admin panel</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -87,6 +93,7 @@ export default function LoginPage() {
         <Button className="w-full" onClick={form.handleSubmit(onSubmit)}>
           Login
         </Button>
+        <Link to={"/auth"}>Back</Link>
       </CardFooter>
     </Card>
   );
