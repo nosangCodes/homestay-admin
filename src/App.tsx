@@ -1,9 +1,14 @@
 import { RouterProvider } from "react-router-dom";
 import "./App.css";
 import router from "./routes";
+import { RecoilRoot } from "recoil";
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <RecoilRoot>
+      <RouterProvider router={router} />
+    </RecoilRoot>
+  );
 }
 
 export default App;
