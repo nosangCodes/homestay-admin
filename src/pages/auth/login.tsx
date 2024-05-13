@@ -40,7 +40,6 @@ export default function LoginPage() {
         console.log("🚀 ~ onSubmit ~ response:", res);
         setAuth({
           loggedIn: true,
-          token: res.token,
         });
       })
       .catch((err) => {
