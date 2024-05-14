@@ -22,7 +22,6 @@ import { loginSchema, loginSchemaType } from "./schemas";
 import { login } from "./api";
 import { useSetRecoilState } from "recoil";
 import authState from "@/state/atom/auth";
-import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   const form = useForm({
@@ -40,7 +39,6 @@ export default function LoginPage() {
         console.log("🚀 ~ onSubmit ~ response:", res);
         setAuth({
           loggedIn: true,
-          token: res.token,
         });
       })
       .catch((err) => {
@@ -93,7 +91,6 @@ export default function LoginPage() {
         <Button className="w-full" onClick={form.handleSubmit(onSubmit)}>
           Login
         </Button>
-        <Link to={"/auth"}>Back</Link>
       </CardFooter>
     </Card>
   );
