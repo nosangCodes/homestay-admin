@@ -1,10 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
-import LoginPage from "./pages/auth/login";
-import AuthLayout from "./pages/auth/layout";
-import Home from "./pages/main/home";
-import HomeLayout from "./pages/main/layout";
-import ProtectedRoutes from "./pages/routes/protectedRoutes";
-import Root from "./pages/root";
+import {
+  Admins,
+  AuthLayout,
+  Home,
+  HomeLayout,
+  Login,
+  ProtectedRoutes,
+  Rooms,
+  Root,
+  Stats,
+} from "./pages";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +26,18 @@ const router = createBrowserRouter([
                 index: true,
                 element: <Home />,
               },
+              {
+                path: "rooms",
+                element: <Rooms />,
+              },
+              {
+                path: "admins",
+                element: <Admins />,
+              },
+              {
+                path: "stats",
+                element: <Stats />,
+              },
             ],
           },
         ],
@@ -31,7 +48,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "login",
-            element: <LoginPage />,
+            element: <Login />,
           },
         ],
       },

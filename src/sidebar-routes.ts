@@ -2,12 +2,14 @@ import { BedDouble, ScatterChart, Shield, Sparkles } from "lucide-react";
 
 export const sidebarRoutes = [
   {
-    name: "Admins",
-    Icon: Shield,
-  },
-  {
     name: "Dashboard",
     Icon: ScatterChart,
+    path: "/stats",
+  },
+  {
+    name: "Admins",
+    Icon: Shield,
+    path: "admins",
   },
   {
     category: "Theme",
@@ -24,6 +26,7 @@ export const sidebarRoutes = [
       {
         name: "Room",
         Icon: BedDouble,
+        path: "rooms",
       },
     ],
   },
