@@ -2,10 +2,10 @@ import { createBrowserRouter } from "react-router-dom";
 import {
   Admins,
   AuthLayout,
-  Home,
   HomeLayout,
   Login,
   ProtectedRoutes,
+  Room,
   Rooms,
   Root,
   Stats,
@@ -23,12 +23,12 @@ const router = createBrowserRouter([
             element: <HomeLayout />,
             children: [
               {
-                index: true,
-                element: <Home />,
-              },
-              {
                 path: "rooms",
                 element: <Rooms />,
+              },
+              {
+                path: "rooms/:id",
+                element: <Room />,
               },
               {
                 path: "admins",

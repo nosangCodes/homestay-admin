@@ -10,4 +10,14 @@ const fetchRooms = async (page = 1, pageSize = 10) => {
   return await response.json();
 };
 
-export { fetchRooms };
+const fetchRoomById = async (id: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/room/${id}`,
+    {
+      credentials: "include",
+    }
+  );
+  return await response.json();
+};
+
+export { fetchRooms, fetchRoomById };

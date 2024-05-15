@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 export default function AuthLayout() {
   const auth = useRecoilValue(authState);
   return auth?.loggedIn ? (
-    <Navigate to={"/"} />
+    <Navigate to={"/stats"} />
   ) : (
     <section className="h-screen max-w-xl mx-auto px-4 flex justify-center items-center">
       <Outlet />
