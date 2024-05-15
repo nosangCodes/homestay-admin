@@ -1,9 +1,12 @@
+import { DetailedRoom } from "@/typpes";
 import { atom } from "recoil";
 
-const roomState = atom({
+const roomState = atom<{
+  room?: DetailedRoom;
+}>({
   key: "recoilState",
   default: {
-    rooms: [],
+    room: undefined,
   },
 });
 export default roomState;

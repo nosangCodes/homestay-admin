@@ -1,4 +1,4 @@
-export type Room = {
+export interface Room {
   id: number;
   title: string;
   description: string;
@@ -6,4 +6,15 @@ export type Room = {
   rate: number;
   underMaintenance: boolean;
   createdAt: string;
-};
+}
+
+export interface DetailedRoom extends Room {
+  images: {
+    name: string;
+    url: string;
+  }[];
+  thumbnailName: {
+    name: string;
+    url: string;
+  };
+}

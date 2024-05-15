@@ -13,7 +13,7 @@ import {
 import { formatDate, textSlice } from "@/lib/utils";
 import { Room } from "@/typpes";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, Outlet, useSearchParams } from "react-router-dom";
 
 export default function Rooms() {
   const [searchParams] = useSearchParams();
@@ -70,7 +70,14 @@ export default function Rooms() {
               className="hover:bg-zinc-800 hover:text-zinc-100"
             >
               <TableCell>{index + 1}</TableCell>
-              <TableCell>{room.title}</TableCell>
+              <TableCell>
+                <Link
+                  className="hover:underline cursor-pointer hover:text-indigo-600"
+                  to={`${room.id}`}
+                >
+                  {room.title}
+                </Link>
+              </TableCell>
               <TableCell>{textSlice(room.description, 30)}</TableCell>
               <TableCell>{room.rate}</TableCell>
               <TableCell>
@@ -92,6 +99,7 @@ export default function Rooms() {
           className="mt-auto bg-emerald-500 py-2"
         />
       )}
+      <Outlet />
     </section>
   );
 }
