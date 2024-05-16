@@ -1,4 +1,4 @@
-import { DetailedRoom } from "@/typpes";
+import { DetailedRoom } from "@/types";
 import DataView from "./data-view";
 import { Switch } from "./ui/switch";
 import { formatDate } from "@/lib/utils";
@@ -11,7 +11,7 @@ type Props = {
 
 export default function RoomView({ data }: Props) {
   return (
-    <ScrollArea className="overflow-y-auto pb-4">
+    <ScrollArea className="pb-10">
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="flex flex-col gap-y-4">
           <DataView label={"Title"}>

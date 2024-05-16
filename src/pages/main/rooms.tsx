@@ -1,6 +1,7 @@
 import { fetchRooms } from "@/api";
 import PageHeader from "@/components/page-header";
 import TablePagination from "@/components/pagination";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
   Table,
@@ -11,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDate, textSlice } from "@/lib/utils";
-import { Room } from "@/typpes";
+import { Room } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useSearchParams } from "react-router-dom";
 
@@ -50,9 +51,16 @@ export default function Rooms() {
     };
   }, [page, pageSize]);
 
+  const Action = () => {
+    return (
+      <Link to={"new"}>
+        <Button size={"sm"} variant={"secondary"}>Add new</Button>
+      </Link>
+    );
+  };
   return (
     <section className="my-3 rounded-sm mr-3 flex flex-col h-[calc(100vh-16px)]">
-      <PageHeader label="Rooms" />
+      <PageHeader actions={<Action />} label="Rooms" />
       <Table className="bg-zinc-900">
         <TableHeader className="sticky top-0 bg-zinc-900 z-20">
           <TableRow className="hover:bg-transparent">

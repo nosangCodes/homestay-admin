@@ -1,13 +1,32 @@
+import { Link } from "react-router-dom";
 import { Separator } from "./ui/separator";
+import { MoveLeft } from "lucide-react";
+import React from "react";
 
 type Props = {
   label?: string;
+  backLink?: string;
+  actions?: React.ReactNode;
 };
-export default function PageHeader({ label = "Loading..." }: Props) {
+export default function PageHeader({
+  label,
+  backLink,
+  actions,
+}: Props) {
   return (
-    <div className="py-3">
-      <h1 className="font-sans text-2xl text-zinc-300">{label}</h1>
+    <header className="py-3">
+      <div className="flex justify-between items-center">
+        <div className="flex gap-x-4 items-center">
+          {backLink && (
+            <Link to={backLink}>
+              <MoveLeft className="hover:text-indigo-500 hover:scale-125 transition-[transform, colors]" />
+            </Link>
+          )}
+          <h1 className="font-sans text-2xl text-zinc-300">{label}</h1>
+        </div>
+        {actions}
+      </div>
       <Separator className="mt-3" />
-    </div>
+    </header>
   );
 }
