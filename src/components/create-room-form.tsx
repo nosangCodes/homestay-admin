@@ -15,7 +15,7 @@ import { Textarea } from "./ui/textarea";
 import { Switch } from "./ui/switch";
 import UploadFile from "./upload-file";
 import { Button } from "./ui/button";
-import FacilitySelector from "./facility-selecto";
+import FacilitySelector from "./facility-selector";
 import { useEffect } from "react";
 import { fetchFacilities } from "@/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
