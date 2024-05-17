@@ -18,3 +18,8 @@ export interface DetailedRoom extends Room {
     url: string;
   };
 }
+
+export type Facility = {
+  id: number;
+  name: string;
+};

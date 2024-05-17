@@ -35,8 +35,7 @@ export default function LoginPage() {
   const setAuth = useSetRecoilState(authState);
   const onSubmit = async (values: loginSchemaType) => {
     await login(values)
-      .then((res) => {
-        console.log("🚀 ~ onSubmit ~ response:", res);
+      .then(() => {
         setAuth({
           loggedIn: true,
         });

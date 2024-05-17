@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -12,35 +13,67 @@ import { createRoomSchema, createRoomSchemaType } from "@/pages/auth/schemas";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Switch } from "./ui/switch";
-import { useEffect } from "react";
 import UploadFile from "./upload-file";
+import { Button } from "./ui/button";
+import FacilitySelector from "./facility-selecto";
+import { useEffect } from "react";
+import { fetchFacilities } from "@/api";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import facilitiesState from "@/state/atom/facilities";
+import { facilitiesValue } from "@/state/selectors/room";
 
-type Props = {};
+export default function CreateRoomForm() {
+  const setFacilities = useSetRecoilState(facilitiesState);
+  const facilities = useRecoilValue(facilitiesValue);
+  // fetch faciliries
+  useEffect(() => {
+    fetchFacilities()
+      .then((res) => {
+        setFacilities((prev) => ({
+          ...prev,
+          facilities: res.data,
+        }));
+      })
+      .catch((err) => {
+        console.error("error fetching facilities", err);
+      });
 
-export default function CreateRoomForm({}: Props) {
+    return () => {};
+  }, [setFacilities]);
+
   const form = useForm({
     resolver: zodResolver(createRoomSchema),
     defaultValues: {
       title: "",
       description: "",
-      rate: 0,
+      rate: 3000,
       underMaintenance: false,
-      facilities: [],
       thumbnail: undefined,
+      facilities: [0],
     },
   });
 
-  const onSubmit = (values: createRoomSchemaType) => {
-    console.log(values);
-  };
+  useEffect(() => {
+    const safeFacilities = facilities || [];
+    if (safeFacilities.length > 0) {
+      const ids = safeFacilities
+        .filter((facility) => facility.id % 2 === 0)
+        .map((facility) => facility.id);
+      if (ids.length > 0) {
+        form.setValue("facilities", ids);
+      }
+    }
+  }, [facilities, form]);
 
-  useEffect(() => {}, [form]);
-  console.log(form.getValues());
+  const onSubmit = (values: createRoomSchemaType) => {
+    console.log("submitting...");
+    console.log("submitted values", values);
+  };
 
   return (
     <Form {...form}>
-      <form className="" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-row gap-2">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex flex-row gap-2 mb-3">
           <div className="flex flex-col gap-2 flex-1">
             <FormField
               name="title"
@@ -49,7 +82,7 @@ export default function CreateRoomForm({}: Props) {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input className="text-zinc-800" {...field} />
+                    <Input autoFocus {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -62,7 +95,7 @@ export default function CreateRoomForm({}: Props) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea className="text-zinc-800" {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -76,11 +109,7 @@ export default function CreateRoomForm({}: Props) {
                   <FormItem className="w-full">
                     <FormLabel>Rate per night</FormLabel>
                     <FormControl>
-                      <Input
-                        className="text-zinc-800"
-                        {...field}
-                        type="number"
-                      />
+                      <Input {...field} type="number" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -94,7 +123,6 @@ export default function CreateRoomForm({}: Props) {
                     <FormLabel>Under Maintenance</FormLabel>
                     <FormControl>
                       <Switch
-                        className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-zinc-800"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -104,35 +132,46 @@ export default function CreateRoomForm({}: Props) {
                 )}
               />
             </div>
+            <FormField
+              name="facilities"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Facilities</FormLabel>
+                  <FormControl>
+                    <FacilitySelector
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <FormField
             name="thumbnail"
             control={form.control}
             render={({ field }) => (
-              <FormItem className=" border w-[350px] flex flex-col gap-y-2 border-zinc-200 rounded-sm p-2">
+              <FormItem
+                tabIndex={0}
+                className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input ring-offset-background w-[350px] h-[300px] flex flex-col gap-y-2 rounded-sm p-2"
+              >
                 <FormLabel>Thumbnail</FormLabel>
                 <FormControl>
                   <UploadFile
                     className="cursor-pointer hover:bg-zinc-800 transition-colors"
-                    value={field.value}
-                    onChange={field.onChange}
+                    {...field}
                   />
                 </FormControl>
+                <FormDescription>Upload One Image</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
           />
-          {/* <div className="">
-            <h3>Thumnail</h3>
-            <UploadFile />
-          </div> */}
         </div>
+        <Button type="submit">Create</Button>
       </form>
     </Form>
   );
 }
-
-// onDrop={(e) => {
-//     e.preventDefault();
-//     handleImages(e.dataTransfer.files);
-//   }}
-//   onDragOver={(e) => e.preventDefault()}

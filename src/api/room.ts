@@ -20,4 +20,14 @@ const fetchRoomById = async (id: string) => {
   return await response.json();
 };
 
-export { fetchRooms, fetchRoomById };
+const fetchFacilities = async () => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/room/get-all-facilities`,
+    {
+      credentials: "include",
+    }
+  );
+  return await response.json();
+};
+
+export { fetchRooms, fetchRoomById, fetchFacilities };

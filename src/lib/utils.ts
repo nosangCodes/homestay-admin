@@ -30,3 +30,4 @@ const mimeTypes = {
 export function getMimeType(type: FileType = FileType.image) {
   return mimeTypes[FileType[type]];
 }
+

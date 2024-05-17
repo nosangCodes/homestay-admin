@@ -61,8 +61,8 @@ export default function Rooms() {
   return (
     <section className="my-3 rounded-sm mr-3 flex flex-col h-[calc(100vh-16px)]">
       <PageHeader actions={<Action />} label="Rooms" />
-      <Table className="bg-zinc-900">
-        <TableHeader className="sticky top-0 bg-zinc-900 z-20">
+      <Table>
+        <TableHeader className="sticky top-0 z-20">
           <TableRow className="hover:bg-transparent">
             {labels?.map((label, index) => (
               <TableHead className="text-white" key={index}>
@@ -90,7 +90,6 @@ export default function Rooms() {
               <TableCell>{room.rate}</TableCell>
               <TableCell>
                 <Switch
-                  className="data-[state=checked]:bg-emerald-400"
                   checked={room.underMaintenance}
                 />
               </TableCell>

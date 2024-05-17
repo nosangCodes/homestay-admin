@@ -27,24 +27,34 @@ export const createRoomSchema = z.object({
     .string()
     .min(50, "Description should be have atleast 50 characters.")
     .max(225, "Description should be less than 225 characters."),
-  rate: z.number({ message: "Rate must be a number" }),
+  rate: z.preprocess(
+    (a) => parseInt(z.string().parse(a), 10),
+    z.number().gte(99, "Must be 100 and above")
+  ),
   underMaintenance: z.boolean({ message: "This field is required" }),
   facilities: z
-    .array(z.string({ message: "must be of type string" }))
-    .min(1, "Atleast one facility is required"),
+    .array(z.number())
+    .min(1, "Atleast 1 facility required")
+    .default([]),
   thumbnail: z
     .any()
-    .refine((files: FileList) => files.length < 0, "Image is required.")
+    .refine(
+      (files: FileList) => files && files.length > 0,
+      "Image is required."
+    )
     .refine(
       (files: FileList) => {
-        return files[0].size <= MAX_FILE_SIZE;
+        return files && files.length > 0 && files[0].size <= MAX_FILE_SIZE;
       },
       {
         message: "Max image size is 5MB.",
       }
     )
     .refine(
-      (files: FileList) => ACCEPTED_IMAGE_MIME_TYPES.includes(files[0].type),
+      (files: FileList) =>
+        files &&
+        files.length > 0 &&
+        ACCEPTED_IMAGE_MIME_TYPES.includes(files[0].type),
       "Only .jpg, .jpeg, .png and .webp formats are supported."
     ),
 });

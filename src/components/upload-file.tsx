@@ -1,7 +1,7 @@
 import { FileType } from "@/enum";
 import { cn, getMimeType } from "@/lib/utils";
-import { CircleX, Cross } from "lucide-react";
-import { useRef } from "react";
+import { CircleX } from "lucide-react";
+import { useRef, useState } from "react";
 
 type Props = {
   multiple?: boolean;
@@ -9,6 +9,7 @@ type Props = {
   value?: FileList;
   className?: string;
   onChange: (files?: FileList) => void;
+  name: string;
 };
 
 export default function UploadFile({
@@ -16,19 +17,27 @@ export default function UploadFile({
   type = FileType.image,
   className,
   value,
+  name,
   onChange,
 }: Props) {
   const mimeType = getMimeType(type);
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState("");
 
   const hadnleFiles = (files: FileList) => {
+    console.log("handle files called....");
     if (!multiple && files.length > 1) {
+      setError("multiple files detected, only one file is allowed");
       console.log("multiple files detected, only one file is allowed");
       return;
     }
 
     for (const file of files) {
       if (!mimeType.includes(file.type)) {
+        setError(
+          "file type not supported, suppoeted file types: " +
+            mimeType.join(", ")
+        );
         console.log(
           "file type not supported, suppoeted file types:",
           mimeType.join(", ")
@@ -36,18 +45,20 @@ export default function UploadFile({
         return;
       }
     }
-    console.log("🚀 ~ hadnleFiles ~ files:", files);
+
+    // onChange(getFilesPaths(files));
     onChange(files);
   };
 
-  const getFilesPaths = (files: FileList) => {
-    const filePaths = [];
-    for (const file of files) {
-      const filePath = URL.createObjectURL(file);
-      filePaths.push(filePath);
-    }
-    return filePaths;
-  };
+  // const getFilesPaths = (files: FileList) => {
+  //   console.log("creating links...");
+  //   const filePaths = [];
+  //   for (const file of files) {
+  //     const filePath = URL.createObjectURL(file);
+  //     filePaths.push(filePath);
+  //   }
+  //   return filePaths;
+  // };
 
   return (
     <div
@@ -67,8 +78,9 @@ export default function UploadFile({
         className
       )}
     >
-      {value && (
+      {value && value.length > 0 && (
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onChange(undefined);
@@ -78,17 +90,17 @@ export default function UploadFile({
         </button>
       )}
       {!value && <p>Upload here</p>}
-      {value &&
-        getFilesPaths(value).map((filePath) => (
+      {value && value?.length > 0 && (
+        <div className="flex flex-col">
           <img
-            key={filePath}
             className="w full h-full object-cover"
-            src={filePath}
+            src={URL.createObjectURL(value?.[0])}
             alt="Room image"
           />
-        ))}
-
+        </div>
+      )}
       <input
+        name={name}
         accept={mimeType.join(", ")}
         ref={inputFileRef}
         multiple={multiple}
@@ -100,6 +112,7 @@ export default function UploadFile({
           }
         }}
       />
+      <p className="text-sm text-center text-red-800">{error}</p>
     </div>
   );
 }
