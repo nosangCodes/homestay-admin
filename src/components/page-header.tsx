@@ -14,7 +14,7 @@ export default function PageHeader({
   actions,
 }: Props) {
   return (
-    <header className="py-3">
+    <header className="py-3 sticky top-3 dark:bg-black z-20">
       <div className="flex justify-between items-center">
         <div className="flex gap-x-4 items-center">
           {backLink && (

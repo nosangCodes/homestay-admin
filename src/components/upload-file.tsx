@@ -1,16 +1,45 @@
 import { FileType } from "@/enum";
 import { cn, getMimeType } from "@/lib/utils";
+import { FileLinkObject } from "@/types";
 import { CircleX } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+
 
 type Props = {
   multiple?: boolean;
   type?: FileType;
-  value?: FileList;
+  value?: (File | FileLinkObject)[];
   className?: string;
-  onChange: (files?: FileList) => void;
+  onChange: (files?: (File | FileLinkObject)[]) => void;
   name: string;
 };
+
+type ImageCardProps = {
+  onRemove: () => void;
+  file: File | FileLinkObject;
+};
+
+export function ImageCard({ file, onRemove }: ImageCardProps) {
+  if (!(file instanceof File) && file?.removed) return;
+  const isFileObject = file instanceof File;
+  const src = isFileObject ? URL.createObjectURL(file) : (file.url as string);
+  return (
+    <div className="w-full sm:w-[300px] flex justify-center items-center relative p-2 aspect-square">
+      <button
+        className="absolute -top-0 -right-0"
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove();
+        }}
+      >
+        <CircleX className="transition-[colors,transform] hover:scale-125 text-red-800 hover:text-red-500 hover:bg-zinc-100 bg-zinc-200 rounded-full h-4 w-4 " />
+      </button>
+      <img className="object-cover h-full w-full" src={src} alt="Room image" />
+    </div>
+  );
+}
 
 export default function UploadFile({
   multiple = false,
@@ -23,16 +52,30 @@ export default function UploadFile({
   const mimeType = getMimeType(type);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
+  const [files, setFiles] = useState<(FileLinkObject | File)[]>([]);
 
-  const hadnleFiles = (files: FileList) => {
+  useEffect(() => {
+    if (value instanceof FileList) {
+      setFiles(Array.from(value));
+    } else if (Array.isArray(value)) {
+      setFiles(value);
+    } else {
+      setFiles([]);
+    }
+  }, [value]);
+
+
+  const hadnleFiles = (fileList: FileList) => {
+    const filesArray = Array.from(fileList);
+    setError("");
     console.log("handle files called....");
-    if (!multiple && files.length > 1) {
+    if (!multiple && filesArray.length > 1) {
       setError("multiple files detected, only one file is allowed");
       console.log("multiple files detected, only one file is allowed");
       return;
     }
 
-    for (const file of files) {
+    for (const file of filesArray) {
       if (!mimeType.includes(file.type)) {
         setError(
           "file type not supported, suppoeted file types: " +
@@ -47,18 +90,50 @@ export default function UploadFile({
     }
 
     // onChange(getFilesPaths(files));
-    onChange(files);
+
+    const updatedFiles = multiple ? [...files, ...filesArray] : filesArray;
+    updateFileList(updatedFiles);
   };
 
-  // const getFilesPaths = (files: FileList) => {
-  //   console.log("creating links...");
-  //   const filePaths = [];
-  //   for (const file of files) {
-  //     const filePath = URL.createObjectURL(file);
-  //     filePaths.push(filePath);
-  //   }
-  //   return filePaths;
-  // };
+  const handleRemoveFile = (
+    id?: number | null,
+    fileToRemove?: File | FileLinkObject
+  ) => {
+    console.log("🚀 ~ fileToRemove:", fileToRemove);
+    const tempFiles = [...files];
+    let updatedFiles: (File | FileLinkObject)[] = [];
+
+    if (!(fileToRemove instanceof File) && fileToRemove?.id) {
+      updatedFiles = tempFiles.map((file) =>
+        file.name === fileToRemove.name ? { ...file, removed: true } : file
+      );
+    } else {
+      updatedFiles = tempFiles.filter((file) => file !== fileToRemove);
+    }
+
+    setFiles([...updatedFiles]);
+    updateFileList(updatedFiles);
+  };
+
+  const updateFileList = (fileArray: (File | FileLinkObject)[]) => {
+    const dataTransfer = new DataTransfer();
+    const fileObjects = fileArray.filter(
+      (file) => file instanceof File
+    ) as File[];
+
+    console.log("🚀 BEFORE ~ updateFileList ~ fileObjects:", fileObjects);
+    fileObjects.forEach((file) => dataTransfer.items.add(file));
+    console.log("🚀 AFTER ~ updateFileList ~ fileObjects:", fileObjects);
+
+    // Combine files and URLs for onChange callback
+    const updatedValue = [
+      ...fileObjects,
+      ...fileArray.filter((file) => !(file instanceof File)),
+    ];
+
+    console.log("🚀 ~ updateFileList ~ updatedValue:", updatedValue);
+    onChange(updatedValue);
+  };
 
   return (
     <div
@@ -66,37 +141,31 @@ export default function UploadFile({
       onDrop={(e) => {
         e.preventDefault();
         const { files } = e.dataTransfer;
-
         hadnleFiles(files);
       }}
       onDragOver={(e) => {
         e.preventDefault();
       }}
-      onDragEnter={() => console.log("entered")}
       className={cn(
-        "w-full h-full border border-dashed flex justify-center items-center relative",
+        "w-full h-full border border-dashed flex justify-center items-center relative p-2",
         className
       )}
     >
-      {value && value.length > 0 && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onChange(undefined);
-          }}
-        >
-          <CircleX className="transition-[colors,transform] hover:scale-110 text-red-800 hover:text-red-500 hover:bg-zinc-100 bg-zinc-200 rounded-full h-5 w-5 absolute -top-2 -right-2" />
-        </button>
-      )}
-      {!value && <p>Upload here</p>}
-      {value && value?.length > 0 && (
-        <div className="flex flex-col">
-          <img
-            className="w full h-full object-cover"
-            src={URL.createObjectURL(value?.[0])}
-            alt="Room image"
-          />
+      {!files || (files.length === 0 && <p>Upload here</p>)}
+      {files && files?.length > 0 && (
+        <div className="flex flex-wrap gap-4 justify-center">
+          {files.map((file: FileLinkObject | File) => (
+            <ImageCard
+              onRemove={() =>
+                handleRemoveFile(
+                  !(file instanceof File) ? file?.id : null,
+                  file
+                )
+              }
+              file={file}
+              key={typeof file === "string" ? file : file.name}
+            />
+          ))}
         </div>
       )}
       <input
@@ -112,7 +181,7 @@ export default function UploadFile({
           }
         }}
       />
-      <p className="text-sm text-center text-red-800">{error}</p>
+      {error && <p className="text-sm text-center text-red-800">{error}</p>}
     </div>
   );
 }

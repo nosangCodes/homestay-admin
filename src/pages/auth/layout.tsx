@@ -7,7 +7,7 @@ export default function AuthLayout() {
   return auth?.loggedIn ? (
     <Navigate to={"/stats"} />
   ) : (
-    <section className="h-screen max-w-xl mx-auto px-4 flex justify-center items-center">
+    <section className="min-h-screen max-w-xl mx-auto px-4 flex justify-center items-center">
       <Outlet />
     </section>
   );

@@ -9,6 +9,7 @@ import { singleRoomState } from "@/state/selectors/room";
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import CreateRoomForm from "@/components/create-room-form";
 
 type RoomActionProps = {
   onDelete: () => void;
@@ -28,13 +29,6 @@ const RoomAction = ({ editLink, onDelete, editMode }: RoomActionProps) => {
           Edit
         </Button>
       </Link>
-      <Button
-        size={"sm"}
-        className={cn(!editMode ? "hidden" : "block")}
-        variant={"secondary"}
-      >
-        Update
-      </Button>
       <Button onClick={onDelete} size={"sm"} variant={"destructive"}>
         Delete
       </Button>
@@ -59,7 +53,6 @@ export default function Room() {
           setRoom(() => ({
             room: res.data,
           }));
-          console.log("single room res", res);
         })
         .catch((err) => {
           console.error("error fetching room data", err);
@@ -72,15 +65,16 @@ export default function Room() {
         room: undefined,
       }));
     };
-  }, [id, setRoom]);
+  }, [id, setRoom, editMode]);
 
   const Content = () => {
     if (loading) return <CiercleLoading loading={loading} />;
     if (!room) return <h1>Room Not found</h1>;
+
     return (
       <>
         {!editMode && <RoomView data={room} />}
-        {editMode && <h1>Edit mode on</h1>}
+        {editMode && <CreateRoomForm id={id} edit={true} data={room} />}
       </>
     );
   };

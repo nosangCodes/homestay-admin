@@ -12,7 +12,7 @@ export function textSlice(text: string, sliceLimit = 100) {
   return text.slice(0, sliceLimit) + "...";
 }
 
-export function formatDate(date: string, format = "DD MMMM, YY") {
+export function formatDate(date: string, format = "DD MMMM, YY, hh:MM A") {
   return moment(date).format(format);
 }
 
