@@ -1,6 +1,7 @@
 import { fetchRooms } from "@/api";
 import PageHeader from "@/components/page-header";
 import TablePagination from "@/components/pagination";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
   Table,
@@ -10,8 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate, textSlice } from "@/lib/utils";
-import { Room } from "@/typpes";
+import { formatDate } from "@/lib/utils";
+import { Room } from "@/types";
+import { EditIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useSearchParams } from "react-router-dom";
 
@@ -22,10 +24,11 @@ export default function Rooms() {
   const labels = [
     "",
     "Title",
-    "Description",
+    // "Description",
     "Rate per night",
     "Under Maintenance",
     "CreatedAt",
+    "Actions",
   ];
   const [rooms, setRooms] = useState<Room[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -50,11 +53,20 @@ export default function Rooms() {
     };
   }, [page, pageSize]);
 
+  const Action = () => {
+    return (
+      <Link to={"new"}>
+        <Button size={"sm"} variant={"secondary"}>
+          Add new
+        </Button>
+      </Link>
+    );
+  };
   return (
-    <section className="my-3 rounded-sm mr-3 flex flex-col h-[calc(100vh-16px)]">
-      <PageHeader label="Rooms" />
-      <Table className="bg-zinc-900">
-        <TableHeader className="sticky top-0 bg-zinc-900 z-20">
+    <section className="py-3 rounded-sm mr-3 flex flex-col">
+      <PageHeader actions={<Action />} label="Rooms" />
+      <Table>
+        <TableHeader className="">
           <TableRow className="hover:bg-transparent">
             {labels?.map((label, index) => (
               <TableHead className="text-white" key={index}>
@@ -78,15 +90,20 @@ export default function Rooms() {
                   {room.title}
                 </Link>
               </TableCell>
-              <TableCell>{textSlice(room.description, 30)}</TableCell>
+              {/* <TableCell>{textSlice(room.description, 30)}</TableCell> */}
               <TableCell>{room.rate}</TableCell>
               <TableCell>
-                <Switch
-                  className="data-[state=checked]:bg-emerald-400"
-                  checked={room.underMaintenance}
-                />
+                <Switch checked={room.underMaintenance} />
               </TableCell>
               <TableCell>{formatDate(room.createdAt)}</TableCell>
+              <TableCell className="flex gap-x-2 items-center">
+                <Link to={`${room.id}?edit=true`}>
+                  <EditIcon className="h-5 w-5 hover:text-indigo-500 transition-colors" />
+                </Link>
+                <button type="button">
+                  <Trash2Icon className="h-5 w-5 cursor-pointer hover:text-rose-800 text-red-700" />
+                </button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

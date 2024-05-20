@@ -1,4 +1,4 @@
-import { DetailedRoom } from "@/typpes";
+import { DetailedRoom } from "@/types";
 import DataView from "./data-view";
 import { Switch } from "./ui/switch";
 import { formatDate } from "@/lib/utils";
@@ -11,9 +11,9 @@ type Props = {
 
 export default function RoomView({ data }: Props) {
   return (
-    <ScrollArea className="overflow-y-auto pb-4">
+    <ScrollArea className="pb-10">
       <div className="flex flex-col lg:flex-row gap-4">
-        <div className="flex flex-col gap-y-4">
+        <div className="flex flex-1 flex-col gap-y-4">
           <DataView label={"Title"}>
             <p>{data.title}</p>
           </DataView>
@@ -33,7 +33,7 @@ export default function RoomView({ data }: Props) {
               <p>{formatDate(data.createdAt)}</p>
             </DataView>
             <DataView label={"Last updated"}>
-              <p>need data</p>
+              <p>{formatDate(data.updatedAt)}</p>
             </DataView>
           </div>
           <DataView label="Facilities">
@@ -50,11 +50,11 @@ export default function RoomView({ data }: Props) {
         </div>
         <div className="flex flex-col gap-2">
           <h3 className="text-zinc-500">Thumbnail</h3>
-          <div className="rounded-sm overflow-hidden h-[200px] lg:h-[300px] w-full lg:w-[350px] relative">
+          <div className="rounded-sm overflow-hidden mx-auto h-[400px] lg:h-[300px] w-[400px] lg:w-[350px] relative">
             <img
               className="absolute inset-0 object-cover h-full w-full"
-              src={data?.thumbnailName?.url}
-              alt={data?.thumbnailName?.name}
+              src={data?.thumbnail?.url}
+              alt={data?.thumbnail?.name}
             />
             {/* <img
               className="absolute inset-0 object-cover h-full w-full"

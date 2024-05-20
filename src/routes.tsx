@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import {
   Admins,
   AuthLayout,
+  CreateRoom,
   HomeLayout,
   Login,
   ProtectedRoutes,
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
               {
                 path: "rooms/:id",
                 element: <Room />,
+              },
+              {
+                path: "rooms/new",
+                element: <CreateRoom />,
               },
               {
                 path: "admins",

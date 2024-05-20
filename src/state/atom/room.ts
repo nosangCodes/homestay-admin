@@ -1,4 +1,4 @@
-import { DetailedRoom } from "@/typpes";
+import { DetailedRoom } from "@/types";
 import { atom } from "recoil";
 
 const roomState = atom<{

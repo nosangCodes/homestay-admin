@@ -35,8 +35,7 @@ export default function LoginPage() {
   const setAuth = useSetRecoilState(authState);
   const onSubmit = async (values: loginSchemaType) => {
     await login(values)
-      .then((res) => {
-        console.log("🚀 ~ onSubmit ~ response:", res);
+      .then(() => {
         setAuth({
           loggedIn: true,
         });
@@ -61,7 +60,7 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input className="focus-visible:ring-zinc-500" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -74,11 +73,7 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      className="focus-visible:ring-zinc-500"
-                      type="password"
-                      {...field}
-                    />
+                    <Input type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
