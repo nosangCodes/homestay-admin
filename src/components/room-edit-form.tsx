@@ -1,9 +1,5 @@
-import { DetailedRoom } from "@/types";
 
-type Props = {
-  roomData: DetailedRoom;
-};
 
-export default function RoomEditForm({ roomData }: Props) {
+export default function RoomEditForm() {
   return <section></section>;
 }
