@@ -96,7 +96,7 @@ export default function UploadFile({
   };
 
   const handleRemoveFile = (
-    id?: number | null,
+    _id?: number | null,
     fileToRemove?: File | FileLinkObject
   ) => {
     console.log("🚀 ~ fileToRemove:", fileToRemove);

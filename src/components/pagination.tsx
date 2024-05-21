@@ -5,9 +5,6 @@ import {
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "./ui/pagination";
 import { cn } from "@/lib/utils";
 import React from "react";
